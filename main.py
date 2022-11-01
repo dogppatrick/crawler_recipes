@@ -78,7 +78,8 @@ class ExtractRecipe(object):
 fn_url = "./recipes_url_list_1031.csv"
 result_fn = './recipes_data_1101.csv'
 batch = 10
-url_to_csv(fn_url, 54)
+pages = 54
+url_to_csv(fn_url, pages)
 print(f'url_list done')
 urls = list(pd.read_csv(fn_url)['url'])
 recipes_data = []
