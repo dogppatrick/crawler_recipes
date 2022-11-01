@@ -76,12 +76,13 @@ class ExtractRecipe(object):
         return cook_time
 
 fn_url = "./recipes_url_list_1031.csv"
+result_fn = './recipes_data_1101.csv'
+batch = 10
 url_to_csv(fn_url, 54)
-
+print(f'url_list done')
 urls = list(pd.read_csv(fn_url)['url'])
 recipes_data = []
 for url in tqdm(urls):
-    # print(url)
     response = requests.get(url)
     html = BeautifulSoup(response.text)
     extract_rec = ExtractRecipe(html)
@@ -99,6 +100,8 @@ for url in tqdm(urls):
         'introductions':introductions
     })
 
-result_fn = './recipes_data_1101.csv'
-df = pd.DataFrame(recipes_data)
-df.to_csv(result_fn, index=False)
+    if len(recipes_data) > batch:
+        df = pd.DataFrame(recipes_data)
+        df.to_csv(result_fn, index=False, mode='a', header=False)
+        recipes_data = []
+
