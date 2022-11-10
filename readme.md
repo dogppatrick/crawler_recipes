@@ -10,3 +10,13 @@ batch:int 每跑多少筆資料存一次檔案
 python main.py
 ```
 
+## ninija recipe
+可以設定的
+```
+pages:int 總共要幾頁資料
+fn:str 結果的檔案名稱
+```
+
+```
+python main_ninja.py
+```

@@ -24,6 +24,7 @@ def extract_recipe(recipie:dict):
         'title': recipie.get("title"),
         'prep_time': recipie.get("prepServe"),
         'cook_time': recipie.get("cooktime"),
+        'servings': recipie.get("servings"),
         'ingredients':clean_html(recipie.get("ingredients")),
         'introductions':clean_html(recipie.get("instructions"))
     }
@@ -56,5 +57,8 @@ def get_recipes_by_page_to_csv(fn,pages:int=1):
     else:
         df.to_csv(fn, index=False, mode='a', header=True)
 
+
+
 fn = "./recipes_ninja.csv"
-get_recipes_by_page_to_csv(fn,139)
+pages = 139
+get_recipes_by_page_to_csv(fn,pages)
