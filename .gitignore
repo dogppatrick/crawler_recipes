@@ -1,3 +1,5 @@
 venv
 tmp*
 *.csv
+data/*
+__pycache__*
