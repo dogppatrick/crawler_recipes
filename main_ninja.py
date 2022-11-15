@@ -19,14 +19,20 @@ def clean_html(txt):
     return txt
 
 def extract_recipe(recipie:dict):
+    img_url = recipie.get("recipeImage",{}).get("large","")
+    if img_url:
+        img_url = f'https://www.ninjakitchen.com/{img_url}'
     return {
         'url': f'https://www.ninjakitchen.com/{recipie.get("recipeUrl")}',
+        'language': 'eng',
+        'hero_image':img_url,
         'title': recipie.get("title"),
         'prep_time': recipie.get("prepServe"),
         'cook_time': recipie.get("cooktime"),
         'servings': recipie.get("servings"),
         'ingredients':clean_html(recipie.get("ingredients")),
-        'introductions':clean_html(recipie.get("instructions"))
+        'introductions':clean_html(recipie.get("instructions")),
+        
     }
 
 def get_recipes_by_page_to_csv(fn,pages:int=1):
@@ -59,6 +65,6 @@ def get_recipes_by_page_to_csv(fn,pages:int=1):
 
 
 
-fn = "./recipes_ninja.csv"
-pages = 139
+fn = "./recipes_ninja_20_page.csv"
+pages = 20
 get_recipes_by_page_to_csv(fn,pages)
