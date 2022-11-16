@@ -35,7 +35,7 @@ def clean_html(txt:str, li_replace:bool=True):
     if li_replace:
         txt = txt.replace("<li>","[obj_start]")
         if '[object_start]' not in txt:
-            txt = '[object_start]' + txt.replace(r"<br/>", "[obj_start]")
+            txt = '[object_start]' + txt.replace(r"<br/>", "[obj_start]").replace(r"<br>", "[obj_start]")
         if '[object_start]' not in txt:
             txt = '[object_start]' + txt.replace(",","[obj_start]")
     txt = re.sub(r"<(.*?)>","",txt) # remove html items
