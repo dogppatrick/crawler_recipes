@@ -16,56 +16,61 @@ warnings.filterwarnings("ignore")
 class IngredientSplit(object):
     def __init__(self, raw_text):
         self.raw_text = raw_text
-        self.unit_sets = set([
-            'packet', 
-            'ounces',
-            'box',
-            'boxes',
-            'cans',  
-            'can', 
-            'teaspoons', 
-            'teaspoon', 
-            'cups',
-            'cup', 
-            'oz',
-            'tablespoons',
-            'tablespoon', 
-            'container', 
-            'pounds', 
-            'pound', 
-            'inchs', 
-            'inch', 
-            'cloves', 
-            'clove',
-            'bags',
-            'bag',
-            'stalks',
-            'stalk',
-            'packages',
-            'package',
-            'stems',
-            'stem',
-            'tbsp.',
-            'strips',
-            'strip',
-            'tsp.'
-            'cubes',
-            'cube',
-            'tbsp',
-            'sticks',
-            'stick',
-            'slices',
-            'slice',
-            'jars',
-            'jar',
-            'tsp',
-            'envelopes',
-            'envelope',
-            'tube',
-            'dashes',
-            'dash'
-            
-        ])
+        self.unite_dict = {
+            ' packet ':'packet',
+            ' ounce ' : 'ounce',
+            ' ounces ': 'ounce',
+            ' box ': 'box',
+            ' boxes ': 'box',
+            ' cans ': 'can',  
+            ' can ' : 'can',
+            ' teaspoons ': 'teaspoon', 
+            ' teaspoon ': 'teaspoon', 
+            ' tsp. ': 'teaspoon',
+            ' tsp ' : 'teaspoon',
+            ' cups ' : 'cup',
+            ' cup ': 'cup', 
+            ' oz ' : 'oz',
+            ' oz. ': 'oz',
+            ' tablespoons ': 'tablespoon',
+            ' tablespoon ': 'tablespoon', 
+            ' tbsp. ': 'tablespoon',
+            ' tbsp ': 'tablespoon',
+            ' container ': 'container', 
+            ' pounds ': 'pound', 
+            ' pound ': 'pound', 
+            ' inchs ': 'inch', 
+            ' inch ': 'inch', 
+            ' cloves ': 'clove', 
+            ' clove ': 'clove',
+            ' bags ': 'bag',
+            ' bag ': 'bag',
+            ' stalks ': 'stalk',
+            ' stalk ': 'stalk',
+            ' packages ': 'package',
+            ' package ': 'package',
+            ' stems ' : 'stem',
+            ' stem ' : 'stem',
+            ' strips ': 'strip',
+            ' strip ': 'strip',
+            ' cubes ': 'cube',
+            ' cube ': 'cube',
+            ' sticks ': 'stick',
+            ' stick ': 'stick',
+            ' slices ': 'slice',
+            ' slice ': 'slice',
+            ' jars ': 'jar',
+            ' jar ': 'jar',
+            ' envelopes ': 'envelope',
+            ' envelope ': 'envelope',
+            ' tube ' : 'tube',
+            ' tubes ' : 'tube',
+            ' dashes ': 'dash',
+            ' dash ': 'dash',
+        }
+
+    def unit_mapping(self, unit):
+        return self.unite_dict.get(unit, unit)
 
     def get_ingredients_amount(self):
         pattern = r"[0-9]{1,5}\/[0-9]{1,3}|[0-9]{1,3}"
@@ -74,9 +79,9 @@ class IngredientSplit(object):
 
     def get_ingredients_unit(self):
         raw_text = re.sub(r"\(.*\)","", self.raw_text).lower()
-        for unit in self.unit_sets:
+        for unit in self.unite_dict.keys():
             if unit in raw_text:
-                return unit
+                return self.unit_mapping(unit)
         return ''
 
     def ingredient_split_result(self):
