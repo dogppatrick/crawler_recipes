@@ -4,8 +4,12 @@ from pprint import pprint
 
 import pandas as pd
 import requests
+from bs4 import BeautifulSoup
 from tqdm import tqdm
 from os.path import exists as file_exists
+import sys
+from datetime import datetime
+ 
 
 warnings.filterwarnings("ignore")
 
@@ -65,6 +69,17 @@ def extract_recipe(recipie:dict):
         
     }
 
+def get_device_info(url:str=""):
+    try:
+        response = requests.get(url)
+        html = BeautifulSoup(response.text,features="html.parser")
+        device = html.find("div",{"id":"TabbedVariants_Current"}).find("span",{"class":"middle"}).find("img")
+        device_name = device['alt']
+        device_image_url = device['data-original']
+        return device_name , device_image_url
+    except Exception as e:
+        return "", ""
+
 def detail_recipe(recipe:dict):
     """
     recipes_data >> detail recipes data with table join like result
@@ -77,6 +92,8 @@ def detail_recipe(recipe:dict):
     max_len = max(len(ingredients), len(introductions))
     ingredients += [''] * (max_len - len(ingredients))
     introductions += [''] * (max_len - len(introductions))
+    url = recipe.get("url",'')
+    device_name , device_image_url = get_device_info(url)
     for i in range(max_len):
         ingredient = ingredients[i] if ingredients[i]!='' else ''
         intro = introductions[i] if introductions[i]!=''  else ''
@@ -86,7 +103,7 @@ def detail_recipe(recipe:dict):
             ingredients_name, ingredients_amount, ingredients_unit = '', '', ''
         intro_step = i +1  if intro else ''
         new_records.append({
-            'url': recipe.get("url",''),
+            'url': url,
             'language': recipe.get("language",'eng'),
             'image_large': recipe.get("image_large",''),
             'image_small': recipe.get("image_small",''),
@@ -99,7 +116,9 @@ def detail_recipe(recipe:dict):
             'ingredients_unit': ingredients_unit,
             'step': intro_step,
             'instructions' : intro,
-            'step_image':''
+            'step_image':'',
+            'device_name': device_name,
+            'device_image_url':f'https://www.ninjakitchen.com{device_image_url}'
         })
     return new_records
 
@@ -133,6 +152,11 @@ def get_recipes_by_page_to_csv(fn,pages:int=1):
         df.to_csv(fn, index=False, mode='a', header=True)
 
 if __name__ == '__main__':
-    fn = "./data/recipes_ninja_139_pages.csv"
-    pages = 139
+    if len(sys.argv) == 2:
+        _, pages = sys.argv
+        pages = int(pages)
+    else:
+        pages = 2
+    dt = datetime.now()
+    fn = f"./data/recipes_ninja_{pages}_pages_{dt.month}{dt.day}.csv"
     get_recipes_by_page_to_csv(fn,pages)
