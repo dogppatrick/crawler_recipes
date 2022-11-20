@@ -16,7 +16,7 @@ warnings.filterwarnings("ignore")
 class IngredientSplit(object):
     def __init__(self, raw_text):
         self.raw_text = raw_text
-        self.unit_sets = set(['packet', 'ounces', 'can', 'teaspoon', 'cup', 'container', 'pounds', 'inch'])
+        self.unit_sets = set(['packet', 'ounces', 'can', 'teaspoon', 'cup', 'tablespoon', 'container', 'pound', 'pounds', 'inch', 'clove', 'cloves'])
 
     def get_ingredients_amount(self):
         pattern = r"[0-9]{1,5}\/[0-9]{1,3}|[0-9]{1,3}"
@@ -24,7 +24,7 @@ class IngredientSplit(object):
         return ''.join(re.search(pattern, self.raw_text).group()) if res else ''
 
     def get_ingredients_unit(self):
-        raw_text = re.sub(r"\(.*\)","", raw_text)
+        raw_text = re.sub(r"\(.*\)","", self.raw_text).lower()
         for unit in self.unit_sets:
             if unit in raw_text:
                 return unit
