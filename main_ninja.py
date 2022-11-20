@@ -24,8 +24,9 @@ class IngredientSplit(object):
         return ''.join(re.search(pattern, self.raw_text).group()) if res else ''
 
     def get_ingredients_unit(self):
+        raw_text = re.sub(r"\(.*\)","", raw_text)
         for unit in self.unit_sets:
-            if unit in self.raw_text:
+            if unit in raw_text:
                 return unit
 
     def ingredient_split_result(self):
@@ -126,7 +127,6 @@ def get_recipes_by_page_to_csv(fn,pages:int=1):
     """
     pages:int last page
     """
-    page = 1
     records = []
     for page in tqdm(range(1,pages+1)):
         url = f'https://www.ninjakitchen.com/api/recipe/?q=&sort=A-Z&tags=&page={page}'
