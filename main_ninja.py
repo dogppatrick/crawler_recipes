@@ -16,7 +16,56 @@ warnings.filterwarnings("ignore")
 class IngredientSplit(object):
     def __init__(self, raw_text):
         self.raw_text = raw_text
-        self.unit_sets = set(['packet', 'ounces', 'can', 'teaspoon', 'cup', 'tablespoon', 'container', 'pound', 'pounds', 'inch', 'clove', 'cloves'])
+        self.unit_sets = set([
+            'packet', 
+            'ounces',
+            'box',
+            'boxes',
+            'cans',  
+            'can', 
+            'teaspoons', 
+            'teaspoon', 
+            'cups',
+            'cup', 
+            'oz',
+            'tablespoons',
+            'tablespoon', 
+            'container', 
+            'pounds', 
+            'pound', 
+            'inchs', 
+            'inch', 
+            'cloves', 
+            'clove',
+            'bags',
+            'bag',
+            'stalks',
+            'stalk',
+            'packages',
+            'package',
+            'stems',
+            'stem',
+            'tbsp.',
+            'strips',
+            'strip',
+            'tsp.'
+            'cubes',
+            'cube',
+            'tbsp',
+            'sticks',
+            'stick',
+            'slices',
+            'slice',
+            'jars',
+            'jar',
+            'tsp',
+            'envelopes',
+            'envelope',
+            'tube',
+            'dashes',
+            'dash'
+            
+        ])
 
     def get_ingredients_amount(self):
         pattern = r"[0-9]{1,5}\/[0-9]{1,3}|[0-9]{1,3}"
@@ -28,13 +77,17 @@ class IngredientSplit(object):
         for unit in self.unit_sets:
             if unit in raw_text:
                 return unit
+        return ''
 
     def ingredient_split_result(self):
-        ingredients_name = self.raw_text
-        ingredients_amount = self.get_ingredients_amount()
-        ingredients_unit = self.get_ingredients_unit()
+        try:
+            ingredients_name = self.raw_text
+            ingredients_amount = self.get_ingredients_amount()
+            ingredients_unit = self.get_ingredients_unit()
 
-        return ingredients_name, ingredients_amount, ingredients_unit
+            return ingredients_name, ingredients_amount, ingredients_unit
+        except Exception as e:
+            print(f'error: {self.raw_text}, {type(self.raw_text)}')
 
 def clean_html(txt:str, li_replace:bool=True):
     if li_replace:
