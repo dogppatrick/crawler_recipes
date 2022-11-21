@@ -73,7 +73,7 @@ class IngredientSplit(object):
         return self.unite_dict.get(unit, unit)
 
     def get_ingredients_amount(self):
-        pattern = r"[0-9]{1,5}\/[0-9]{1,3}|[0-9]{1,3}"
+        pattern = r"[0-9]{1,3}\/[0-9]{1,3}|[0-9]{1,3}|[0-9]{1,3}[ ]{1}[0-9]{1,3}\/[0-9]{1,3}"
         res = re.search(pattern, self.raw_text)
         return ''.join(re.search(pattern, self.raw_text).group()) if res else ''
 
@@ -81,14 +81,15 @@ class IngredientSplit(object):
         raw_text = re.sub(r"\(.*\)","", self.raw_text).lower()
         for unit in self.unite_dict.keys():
             if unit in raw_text:
-                return self.unit_mapping(unit)
+                return unit
         return ''
 
     def ingredient_split_result(self):
         try:
-            ingredients_name = self.raw_text
             ingredients_amount = self.get_ingredients_amount()
             ingredients_unit = self.get_ingredients_unit()
+            ingredients_name = self.raw_text.replace(ingredients_amount,"").replace(ingredients_unit,"")
+            ingredients_unit = self.unit_mapping(ingredients_unit)
 
             return ingredients_name, ingredients_amount, ingredients_unit
         except Exception as e:
@@ -133,7 +134,7 @@ def get_device_info(url:str=""):
         response = requests.get(url)
         html = BeautifulSoup(response.text,features="html.parser")
         device = html.find("div",{"id":"TabbedVariants_Current"}).find("span",{"class":"middle"}).find("img")
-        device_name = device['alt']
+        device_name = clean_html(device['alt'], li_replace=False)
         device_image_url = device['data-original']
         return device_name , device_image_url
     except Exception as e:
@@ -173,6 +174,7 @@ def detail_recipe(recipe:dict):
             'ingredients_name': ingredients_name,
             'ingredients_amount': ingredients_amount,
             'ingredients_unit': ingredients_unit,
+            'ingredients_full': ingredient,
             'step': intro_step,
             'instructions' : intro,
             'step_image':'',
