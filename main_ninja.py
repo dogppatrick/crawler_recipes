@@ -197,15 +197,13 @@ def get_recipes_by_page_to_csv(fn,pages:int=1):
         recipes = [extract_recipe(rec) for rec in data.get("recipes")]
         for recipe in recipes:
             records += detail_recipe(recipe)
-            if len(records) > 200:
-                df = pd.DataFrame(records)
-                if file_exists(fn):
-                    df.to_csv(fn, index=False, mode='a', header=False)
-                else:
-                    df.to_csv(fn, index=False, mode='a', header=True)
-                records = []
-
-    df = pd.DataFrame(records)
+        df = pd.DataFrame(records)
+        df['api_page'] = page
+        if file_exists(fn):
+            df.to_csv(fn, index=False, mode='a', header=False)
+        else:
+            df.to_csv(fn, index=False, mode='a', header=True)
+        records = []
     if file_exists(fn):
         df.to_csv(fn, index=False, mode='a', header=False)
     else:
