@@ -73,7 +73,7 @@ class IngredientSplit(object):
         return self.unite_dict.get(unit, unit)
 
     def get_ingredients_amount(self):
-        pattern = r"[0-9]{1,3}\/[0-9]{1,3}|[0-9]{1,3}|[0-9]{1,3}[ ]{1}[0-9]{1,3}\/[0-9]{1,3}"
+        pattern =  r"[0-9]{1,3}[ ]{1}[0-9]{1,3}\/[0-9]{1,3}|[0-9]{1,3}\/[0-9]{1,3}|[0-9]{1,3}"
         res = re.search(pattern, self.raw_text)
         return ''.join(re.search(pattern, self.raw_text).group()) if res else ''
 
